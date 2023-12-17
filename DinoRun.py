@@ -339,7 +339,7 @@ class Score:
         self.call_count = 0
 
     def count(self):
-        if self.call_count % 2 == 0:
+        if self.call_count % 40 == 0:
             self.score += 1
 
             if self.high_score_achieved:
@@ -452,7 +452,7 @@ def start_game(coin):
 
         else:
             if not dino.idle:
-                if call_coin % 2 == 0:# cho này bắt chướng hàm count để lấy điểm về
+                if call_coin % 40 == 0:# cho này bắt chướng hàm count để lấy điểm về
                     coin[0] += 1
                 call_coin += 1
                 score.count()

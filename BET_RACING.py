@@ -1,7 +1,12 @@
+from turtle import speed
 import pygame, sys, random, os
 from DinoRun import *
 from pygame.locals import *
 import time
+from log import *
+
+##########           00012112005000      MB             ##########
+
 sys.path.insert(0, '../../')
 
 WINDOWWIDTH = 1280
@@ -62,8 +67,9 @@ LANEWIDTH = 60
 
 CARWIDTH = 0
 CARHEIGHT = 0
-CARSPEED = 3
+CARSPEED = 1.5
 CARIMG10 = pygame.image.load("img/dollar.png")
+
 
 
 class Car1():
@@ -112,7 +118,7 @@ class Car1():
                 self.buff = 0
                 self.x -= random.randint(0,3)
             else:
-                self.x += 1.5
+                self.x += self.speed
 
         else:
             vt_1= 1
@@ -162,7 +168,7 @@ class Car2():
                 self.buff = 0
                 self.x -= random.randint(0,3)
             else:
-                self.x += 1.5
+                self.x += self.speed
 
         else:
             vt_2 = 2
@@ -212,7 +218,7 @@ class Car3():
                 self.buff = 0
                 self.x -= random.randint(0,3)
             else:
-                self.x += 1.5
+                self.x += self.speed
 
         else:
             vt_3 = 3
@@ -263,7 +269,7 @@ class Car4():
                 self.buff = 0
                 self.x -= random.randint(0,3)
             else:
-                self.x += 1.5
+                self.x += self.speed
 
         else:
             vt_4 = 4
@@ -312,7 +318,7 @@ class Car5():
                 self.buff = 0
                 self.x -= random.randint(0,3)
             else:
-                self.x += 1.5
+                self.x += self.speed
 
         else:
             vt_5 = 5
@@ -330,31 +336,21 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
     bg.__init__()
     bg.count_321()
     running = True
-    if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == 1:
-        for i in range(3):
-            if bua_chu[i] >= 1:
-                car1.x += 100 * bua_chu[i]
-                bua_chu[i] -= bua_chu[i]
-    if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == 2:
-        for i in range(3):
-            if bua_chu[i] >= 1:
-                car2.x += 100 * bua_chu[i]
-                bua_chu[i] -= bua_chu[i]
-    if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == 3:
-        for i in range(3):
-            if bua_chu[i] >= 1:
-                car3.x += 100 * bua_chu[i]
-                bua_chu[i] -= bua_chu[i]
-    if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == 4:
-        for i in range(3):
-            if bua_chu[i] >= 1:
-                car4.x += 100 * bua_chu[i]
-                bua_chu[i] -= bua_chu[i]
-    if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == 5:
-        for i in range(3):
-            if bua_chu[i] >= 1:
-                car5.x += 100 * bua_chu[i] * bua_chu[i]
-                bua_chu[i] -= bua_chu[i]
+    cars = [car1, car2, car3, car4, car5]
+    for i, car in enumerate(cars, start=1):
+        if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == i:
+            if bua_chu[0] >= 1:
+                car.speed *= ((100 + 5 * bua_chu[0]) % 100)
+                bua_chu[0] -= bua_chu[0]
+            
+            if bua_chu[1] >= 1:
+                car.speed *= ((100 + 10 * bua_chu[1]) % 100)
+                bua_chu[1] -= bua_chu[1]
+            
+            if bua_chu[2] >= 1:
+                car.x += 100 * bua_chu[2]
+                bua_chu[2] -= bua_chu[2]
+    
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -371,8 +367,8 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
         car4.update()
         car5.draw()
         car5.update()
-        print(chon_xe)
-        print(a)
+        # print(chon_xe)
+        # print(a)
         if (vt_1==1 and vt_2==2 and vt_3== 3 and vt_4==4 and vt_5==5):
 
             if (chon_xe[0]== a[0]):
@@ -636,7 +632,7 @@ def HamGiaoDienBetting(set):
                     Nut5 = True
                     chon_xe[0] = 5
                 if tienCuoc[0] == '':
-                    print(tienCuoc[0])
+                    print('')
                 elif (int(tienCuoc[0]) <= int(coin[0])) & (int(tienCuoc[0]) > 0) & (event.button == 1) & (mouse_x >= 570) & (mouse_x <= 754) & (mouse_y >= 540) & (mouse_y <= 607):
                     start_the_game()
 
@@ -863,7 +859,7 @@ def MeNu():
                 if (event.button == 1) & (mouse_x >= 491) & (mouse_x <= 788) & (mouse_y >= 278) & ( mouse_y <= 337):
                     HamGiaoDienShop()
                 if (event.button == 1) & (coin[0] == 0) & (mouse_x >= 491) & (mouse_x <= 788) & (mouse_y >= 374) & ( mouse_y <= 433):
-                    print("MiniGame")
+                    # print("MiniGame")
                     menu_sound.stop()
                     minigame_sound.play()
                     start_game(coin)
@@ -899,7 +895,6 @@ def MeNu():
 
 def main():
     MeNu()
-#####################################
 
 from tkinter import *
 import os
@@ -915,6 +910,14 @@ def delete3():
 
 def delete4():
     screen5.destroy()
+
+
+def delete5():
+    screen6.destroy()
+
+
+def delete6():
+    screen7.destroy()
 
 
 def login_sucess():
@@ -943,50 +946,98 @@ def user_not_found():
     Label(screen5, text="User Not Found").pack()
     Button(screen5, text="OK", command=delete4).pack()
 
+def otp_incorrect():
+    global screen6
+    screen6 = Toplevel(screen)
+    screen6.title("Success")
+    screen6.geometry("150x100")
+    Label(screen6, text="OTP is incorrect").pack()
+    Button(screen6, text="OK", command=delete5).pack()
+
+def username_or_password():
+    global screen7
+    screen7 = Toplevel(screen)
+    screen7.title("Success")
+    screen7.geometry("400x100")
+    Label(screen7, text="The length of Username or Password must be more than 6 characters !").pack()
+    Button(screen7, text="OK", command=delete6).pack()
+
+
+
 
 def register_user():
-    print("working")
+    # print("working")
     global username_info
     username_info = username.get()
     password_info = password.get()
-    file = open(username_info, "w")
-    file.write(username_info + "\n")
-    file.write(password_info)
-    file.close()
-    global coin_username_info
-    coin_username_info =username_info+"_coin"
-    file_1 = open(coin_username_info, "w")
-    file_1.write(str(0))
-    username_entry.delete(0, END)
-    password_entry.delete(0, END)
+    
+    if not ((len(username_info)<6 or len(password_info)<6 or ' ' in username_info or ' ' in password_info)):
+        file = open(username_info, "w")
+        file.write(username_info + "\n")
+        file.write(password_info)
+        file.close()
+        global coin_username_info
+        coin_username_info =username_info+"_coin"
+        file_1 = open(coin_username_info, "w")
+        file_1.write("")
+        username_entry.delete(0, END)
+        password_entry.delete(0, END)
 
-    Label(screen1, text="Registration Sucess", fg="green", font=("calibri", 11)).pack()
+        Label(screen1, text="Registration Sucess", fg="green", font=("calibri", 11)).pack()
+    else:
+        username_or_password()
 
+         
+
+global ma_otp
+ma_otp = generate_verification_code()
+# ma otp sai do kieu du lieu khac nhau, can xu xu ly kieu du lieu cua ham sinh ngau nhien 
 
 def login_verify():
+    
+
     username1 = username_verify.get()
     password1 = password_verify.get()
+    otp1 = otp_verify.get()
+
     username_entry1.delete(0, END)
     password_entry1.delete(0, END)
+
     list_of_files = os.listdir()
+    
     if username1 in list_of_files:
         file1 = open(username1, "r")
         verify = file1.read().splitlines()
         global  coin_username_info
         coin_username_info=username1+"_coin"
         if password1 in verify:
-            global coin
-            coin=[50]
-            file_1=open(coin_username_info,'r')
-            n=file_1.read()
-            coin.append(int(n))
-            if __name__ == '__main__':
-                main()
+            if str(ma_otp) == str(otp1):
+                global coin
+                coin = []
+                # Mở file để đọc
+                try:
+                    file_1 = open(coin_username_info, 'r')
+                    n = file_1.read()
+                    file_1.close()
+                    # Kiểm tra nếu file rỗng
+                    if not n:
+                        coin.append(50)  # Nếu file rỗng, gán giá trị mặc định là 50
+                    else:
+                        coin.append(int(n))
+                except FileNotFoundError:
+                    print(f"File {coin_username_info} not found.")
+                    # Xử lý trường hợp file không tồn tại, có thể tạo mới file hoặc thực hiện xử lý khác
+                if __name__ == '__main__':
+                    main()
+            else:
+                otp_incorrect()
+
         else:
             password_not_recognised()
 
     else:
         user_not_found()
+    
 
 
 def register():
@@ -1015,20 +1066,50 @@ def register():
     Button(screen1, text="Register", width=10, height=1, command=register_user).pack()
 
 
+def send_otp():
+
+    email1 = email_verify.get()
+    # email_entry1.delete(0, END)
+
+    send_email(email1, ma_otp)
+
+    Label(screen2, text="OTP * ").pack()
+    otp_entry1 = Entry(screen2, textvariable=otp_verify)
+    otp_entry1.pack()
+    Label(screen2, text="").pack()
+
+
+    Label(screen2, text="").pack()
+    Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
+    Label(screen2, text="").pack()
+
+
+
+
+
 def login():
     global screen2
     screen2 = Toplevel(screen)
     screen2.title("Login")
-    screen2.geometry("300x250")
+    screen2.geometry("300x400")
     Label(screen2, text="Please enter details below to login").pack()
     Label(screen2, text="").pack()
 
     global username_verify
     global password_verify
 
+    global email_verify
+    global otp_verify
+
+    global email_entry1
+    global otp_entry1
+
+
     username_verify = StringVar()
     password_verify = StringVar()
-
+    email_verify = StringVar()
+    otp_verify = StringVar()
+ 
     global username_entry1
     global password_entry1
 
@@ -1036,19 +1117,28 @@ def login():
     username_entry1 = Entry(screen2, textvariable=username_verify)
     username_entry1.pack()
     Label(screen2, text="").pack()
+
     Label(screen2, text="Password * ").pack()
     password_entry1 = Entry(screen2, textvariable=password_verify)
     password_entry1.pack()
     Label(screen2, text="").pack()
-    Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
+
+    Label(screen2, text="Email * ").pack()
+    email_entry1 = Entry(screen2, textvariable=email_verify)
+    email_entry1.pack()
+
+    Label(screen2, text="").pack()
+    # chinh sua cho nay gui email chu khong phai la login verify
+    Button(screen2, text="Send OTP", width=10, height=1, command=send_otp).pack()
+    Label(screen2, text="").pack()
 
 
 def main_screen():
     global screen
     screen = Tk()
     screen.geometry("300x250")
-    screen.title("Notes 1.0")
-    Label(text="Notes 1.0", bg="grey", width="300", height="2", font=("Calibri", 13)).pack()
+    screen.title("LOGIN SCREEN")
+    Label(text="WELCOME TO BETTING_RACING", bg="#FFCCFF", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
     Button(text="Login", height="2", width="30", command=login).pack()
     Label(text="").pack()
@@ -1060,12 +1150,15 @@ def main_screen():
 main_screen()
 
 
+
 ''''''''''''''''''''''''''''''
 '  Nhóm 1                    '
 '  Game: Cá cược đua xe      '
 '                            '
 '                            '
 '  GVHD: VÕ HOÀNG QUÂN       '
+'                            '
+'  +   NGUYỄN PHÚC HẬU       '
 '                            '
 '  +   TỐNG DƯƠNG THÁI HÒA   '
 '                            '
@@ -1075,6 +1168,5 @@ main_screen()
 '                            '
 '  +   TRẦN NHẬT DƯƠNG       '
 '                            '
-'  +   NGUYỄN PHÚC HẬU       '
 '                            '
 ''''''''''''''''''''''''''''''
