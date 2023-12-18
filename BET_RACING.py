@@ -1,3 +1,4 @@
+from tabnanny import NannyNag
 from turtle import speed
 import pygame, sys, random, os
 from DinoRun import *
@@ -50,7 +51,7 @@ DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.flip()
 pygame.display.set_caption('RACING BETTING')
 
-
+buff = load_sprites("img/Buff/", "m", 4)
 
 #======================================================================================
 
@@ -67,7 +68,7 @@ LANEWIDTH = 60
 
 CARWIDTH = 0
 CARHEIGHT = 0
-CARSPEED = 1.5
+CARSPEED = 2
 CARIMG10 = pygame.image.load("img/dollar.png")
 
 
@@ -86,39 +87,78 @@ class Car1():
         self.move = 0.5
         self.image_index = 0
         self.make = 0
+        self.check = [True, True, True]
+        self.time = [80, 80, 80]
+        self.show = [0,0,0,0]
+        self.pay = [False, False]
     def draw(self):
-        DISPLAYSURF.blit(car_1[self.buff], (int(self.x), int(self.y )))
+        DISPLAYSURF.blit(car_1[self.buff], (int(self.x), int(self.y)))
+        if self.pay[0] or self.pay[1]:
+            if self.pay[0] and self.pay[1]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/buadacbiet.png"), (int(self.x), int(self.y)))
+            elif self.pay[0]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua.png"), (int(self.x), int(self.y)))
+            else:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua2.png"), (int(self.x), int(self.y)))
+        for i in range(3):
+            if self.time[i] > 0 and self.check[i] == False:
+                DISPLAYSURF.blit(buff[self.show[i]], (int(self.x), int(self.y)))
+                self.time[i] -= 2
+            
+        if self.check[0]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (250, int(self.y) + 10))
+        if self.check[1]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (550, int(self.y) + 10))
+        if self.check[2]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (850, int(self.y) + 10))
         global pos_now1
         pos_now1 = self.x
         if (pos_now1 > 1151):
             a.append(1)
-        if self.x == 1151:
+        if self.x == 1151 and a[0] == 1:
             self.make = (self.make + 1) % 100
             if self.make % 4 == 0:
                 self.image_index = (self.image_index + 1) % 2
                 self.buff = self.image_index + 1
-
+    
+    def apply_buff(self, buff_type):
+        self.ngau_nhien = [random.randint(1, 100), random.randint(1, 100), random.randint(1, 100)]
+        for i in range(3):
+            if buff_type == i:
+                if self.ngau_nhien[i] >= 1 and self.ngau_nhien[i] <= 10:
+                    self.x = 100
+                    self.show[i] = 0
+                elif self.ngau_nhien[i] >= 60 and self.ngau_nhien[i] <= 51:
+                    self.x = 1100
+                    self.show[i] = 1
+                elif self.ngau_nhien[i] >= 11 and self.ngau_nhien[i] <= 50:
+                    self.x += 100
+                    self.speed *= 1.3
+                    self.show[i] = 2
+                else:
+                    self.x -= 100
+                    self.speed *= 0.8
+                    self.show[i] = 3
+    
     def update(self):
         global pos_now1
         pos_now1 = self.x
         if self.x <= 1150:
-            self.move *= -1
-            self.buff = 1
-            if self.x +5 > 1150:
-                self.x += 8
+            if self.x + 5 > 1150:
+                self.x += 5
             global vt_1
             vt_1 = 0
-            change = random.randint(1, 5)
-            if ((self.x > 80 * change) and (self.x < 80 * change + 5)):
-                self.x = 250
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 2
-                self.x += random.randint(0,3)
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 0
-                self.x -= random.randint(0,3)
+            if self.x >= 150 and self.x <= 200 and self.check[0]:
+                self.apply_buff(0)
+                self.check[0] = False
+            elif self.x >= 450 and self.x <= 500 and self.check[1]:
+                self.apply_buff(1)
+                self.check[1] = False
+            elif self.x >= 750 and self.x <= 800 and self.check[2]:
+                self.apply_buff(2)
+                self.check[2] = False
             else:
-                self.x += self.speed
+                self.x += self.speed  
 
         else:
             vt_1= 1
@@ -134,41 +174,80 @@ class Car2():
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
-        self.move = 1
+        self.move = 0.5
         self.image_index = 0
         self.make = 0
+        self.check = [True, True, True]
+        self.time = [80, 80, 80]
+        self.show = [0,0,0,0]
+        self.pay = [False, False]
     def draw(self):
-        DISPLAYSURF.blit(car_2[self.buff], (int(self.x), int(self.y )))
+        DISPLAYSURF.blit(car_2[self.buff], (int(self.x), int(self.y)))
+        if self.pay[0] or self.pay[1]:
+            if self.pay[0] and self.pay[1]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/buadacbiet.png"), (int(self.x), int(self.y)))
+            elif self.pay[0]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua.png"), (int(self.x), int(self.y)))
+            else:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua2.png"), (int(self.x), int(self.y)))
+        for i in range(3):
+            if self.time[i] > 0 and self.check[i] == False:
+                DISPLAYSURF.blit(buff[self.show[i]], (int(self.x), int(self.y)))
+                self.time[i] -= 2
+            
+        if self.check[0]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (250, int(self.y) + 10))
+        if self.check[1]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (550, int(self.y) + 10))
+        if self.check[2]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (850, int(self.y) + 10))
         global pos_now2
         pos_now2 = self.x
         if (pos_now2 > 1151):
             a.append(2)
-        if self.x == 1151:
+        if self.x == 1151 and a[0] == 2:
             self.make = (self.make + 1) % 100
             if self.make % 4 == 0:
                 self.image_index = (self.image_index + 1) % 2
                 self.buff = self.image_index + 1
+    
+    def apply_buff(self, buff_type):
+        self.ngau_nhien = [random.randint(1, 100), random.randint(1, 100), random.randint(1, 100)]
+        for i in range(3):
+            if buff_type == i:
+                if self.ngau_nhien[i] >= 1 and self.ngau_nhien[i] <= 10:
+                    self.x = 100
+                    self.show[i] = 0
+                elif self.ngau_nhien[i] >= 60 and self.ngau_nhien[i] <= 51:
+                    self.x = 1100
+                    self.show[i] = 1
+                elif self.ngau_nhien[i] >= 11 and self.ngau_nhien[i] <= 50:
+                    self.x += 100
+                    self.speed *= 1.3
+                    self.show[i] = 2
+                else:
+                    self.x -= 100
+                    self.speed *= 0.8
+                    self.show[i] = 3
     def update(self):
         global pos_now2
         pos_now2 = self.x
         if self.x <= 1150:
-            self.move *= -1
-            self.buff = 1
             if self.x +5 > 1150:
                 self.x += 8
             global vt_2
             vt_2 = 0
-            change = random.randint(1, 5)
-            if ((self.x > 80 * change) and (self.x < 80 * change + 5)):
-                self.x = 250
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 2
-                self.x += random.randint(0,3)
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 0
-                self.x -= random.randint(0,3)
+            if self.x >= 150 and self.x <= 200 and self.check[0]:
+                self.apply_buff(0)
+                self.check[0] = False
+            elif self.x >= 450 and self.x <= 500 and self.check[1]:
+                self.apply_buff(1)
+                self.check[1] = False
+            elif self.x >= 750 and self.x <= 800 and self.check[2]:
+                self.apply_buff(2)
+                self.check[2] = False
             else:
-                self.x += self.speed
+                self.x += self.speed  
 
         else:
             vt_2 = 2
@@ -184,41 +263,80 @@ class Car3():
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
-        self.move = 1
+        self.move = 0.5
         self.image_index = 0
         self.make = 0
+        self.check = [True, True, True]
+        self.time = [80, 80, 80]
+        self.show = [0,0,0,0]
+        self.pay = [False, False]
     def draw(self):
-        DISPLAYSURF.blit(car_3[self.buff], (int(self.x), int(self.y )))
+        DISPLAYSURF.blit(car_3[self.buff], (int(self.x), int(self.y)))
+        if self.pay[0] or self.pay[1]:
+            if self.pay[0] and self.pay[1]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/buadacbiet.png"), (int(self.x), int(self.y)))
+            elif self.pay[0]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua.png"), (int(self.x), int(self.y)))
+            else:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua2.png"), (int(self.x), int(self.y)))
+        for i in range(3):
+            if self.time[i] > 0 and self.check[i] == False:
+                DISPLAYSURF.blit(buff[self.show[i]], (int(self.x), int(self.y)))
+                self.time[i] -= 2
+            
+        if self.check[0]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (250, int(self.y) + 10))
+        if self.check[1]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (550, int(self.y) + 10))
+        if self.check[2]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (850, int(self.y) + 10))
         global pos_now3
         pos_now3 = self.x
         if (pos_now3 > 1151):
             a.append(3)
-        if self.x == 1151:
+        if self.x == 1151 and a[0] == 3:
             self.make = (self.make + 1) % 100
             if self.make % 4 == 0:
                 self.image_index = (self.image_index + 1) % 2
                 self.buff = self.image_index + 1
+    
+    def apply_buff(self, buff_type):
+        self.ngau_nhien = [random.randint(1, 100), random.randint(1, 100), random.randint(1, 100)]
+        for i in range(3):
+            if buff_type == i:
+                if self.ngau_nhien[i] >= 1 and self.ngau_nhien[i] <= 10:
+                    self.x = 100
+                    self.show[i] = 0
+                elif self.ngau_nhien[i] >= 60 and self.ngau_nhien[i] <= 51:
+                    self.x = 1100
+                    self.show[i] = 1
+                elif self.ngau_nhien[i] >= 11 and self.ngau_nhien[i] <= 50:
+                    self.x += 100
+                    self.speed *= 1.3
+                    self.show[i] = 2
+                else:
+                    self.x -= 100
+                    self.speed *= 0.8
+                    self.show[i] = 3
     def update(self):
         global pos_now3
         pos_now3 = self.x
         if self.x <= 1150:
-            self.move *= -1
-            self.buff = 1
             if self.x +5 > 1150:
                 self.x += 8
             global vt_3
             vt_3 = 0
-            change = random.randint(1, 5)
-            if ((self.x > 80 * change) and (self.x < 80 * change + 5)):
-                self.x = 250
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 2
-                self.x += random.randint(0,3)
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 0
-                self.x -= random.randint(0,3)
+            if self.x >= 150 and self.x <= 200 and self.check[0]:
+                self.apply_buff(0)
+                self.check[0] = False
+            elif self.x >= 450 and self.x <= 500 and self.check[1]:
+                self.apply_buff(1)
+                self.check[1] = False
+            elif self.x >= 750 and self.x <= 800 and self.check[2]:
+                self.apply_buff(2)
+                self.check[2] = False
             else:
-                self.x += self.speed
+                self.x += self.speed  
 
         else:
             vt_3 = 3
@@ -235,41 +353,80 @@ class Car4():
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
-        self.move = 1
+        self.move = 0.5
         self.image_index = 0
         self.make = 0
+        self.check = [True, True, True]
+        self.time = [80, 80, 80]
+        self.show = [0,0,0,0]
+        self.pay = [False, False]
     def draw(self):
-        DISPLAYSURF.blit(car_4[self.buff], (int(self.x), int(self.y )))
+        DISPLAYSURF.blit(car_4[self.buff], (int(self.x), int(self.y)))
+        if self.pay[0] or self.pay[1]:
+            if self.pay[0] and self.pay[1]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/buadacbiet.png"), (int(self.x), int(self.y)))
+            elif self.pay[0]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua.png"), (int(self.x), int(self.y)))
+            else:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua2.png"), (int(self.x), int(self.y)))
+        for i in range(3):
+            if self.time[i] > 0 and self.check[i] == False:
+                DISPLAYSURF.blit(buff[self.show[i]], (int(self.x), int(self.y)))
+                self.time[i] -= 2
+            
+        if self.check[0]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (250, int(self.y) + 10))
+        if self.check[1]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (550, int(self.y) + 10))
+        if self.check[2]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (850, int(self.y) + 10))
         global pos_now4
         pos_now4 = self.x
         if (pos_now4 > 1151):
             a.append(4)
-        if self.x == 1151:
+        if self.x == 1151 and a[0] == 4:
             self.make = (self.make + 1) % 100
             if self.make % 4 == 0:
                 self.image_index = (self.image_index + 1) % 2
                 self.buff = self.image_index + 1
+    
+    def apply_buff(self, buff_type):
+        self.ngau_nhien = [random.randint(1, 100), random.randint(1, 100), random.randint(1, 100)]
+        for i in range(3):
+            if buff_type == i:
+                if self.ngau_nhien[i] >= 1 and self.ngau_nhien[i] <= 10:
+                    self.x = 100
+                    self.show[i] = 0
+                elif self.ngau_nhien[i] >= 60 and self.ngau_nhien[i] <= 51:
+                    self.x = 1100
+                    self.show[i] = 1
+                elif self.ngau_nhien[i] >= 11 and self.ngau_nhien[i] <= 50:
+                    self.x += 100
+                    self.speed *= 1.3
+                    self.show[i] = 2
+                else:
+                    self.x -= 100
+                    self.speed *= 0.8
+                    self.show[i] = 3
     def update(self):
         global pos_now4
         pos_now4 = self.x
         if self.x <= 1150:
-            self.move *= -1
-            self.buff = 1
             if self.x +5 > 1150:
                 self.x += 8
             global vt_4
             vt_4 = 0
-            change = random.randint(1, 5)
-            if ((self.x > 80 * change) and (self.x < 80 * change + 5)):
-                self.x = 250
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 2
-                self.x += random.randint(0,3)
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 0
-                self.x -= random.randint(0,3)
+            if self.x >= 150 and self.x <= 200 and self.check[0]:
+                self.apply_buff(0)
+                self.check[0] = False
+            elif self.x >= 450 and self.x <= 500 and self.check[1]:
+                self.apply_buff(1)
+                self.check[1] = False
+            elif self.x >= 750 and self.x <= 800 and self.check[2]:
+                self.apply_buff(2)
+                self.check[2] = False
             else:
-                self.x += self.speed
+                self.x += self.speed 
 
         else:
             vt_4 = 4
@@ -284,39 +441,78 @@ class Car5():
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
-        self.move = 1
+        self.move = 0.5
         self.image_index = 0
         self.make = 0
+        self.check = [True, True, True]
+        self.time = [80, 80, 80]
+        self.show = [0,0,0,0]
+        self.pay = [False, False]
     def draw(self):
-        DISPLAYSURF.blit(car_5[self.buff], (int(self.x), int(self.y )))
+        DISPLAYSURF.blit(car_5[self.buff], (int(self.x), int(self.y)))
+        if self.pay[0] or self.pay[1]:
+            if self.pay[0] and self.pay[1]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/buadacbiet.png"), (int(self.x), int(self.y)))
+            elif self.pay[0]:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua.png"), (int(self.x), int(self.y)))
+            else:
+                DISPLAYSURF.blit(pygame.image.load("img/Buff/bua2.png"), (int(self.x), int(self.y)))
+        for i in range(3):
+            if self.time[i] > 0 and self.check[i] == False:
+                DISPLAYSURF.blit(buff[self.show[i]], (int(self.x), int(self.y)))
+                self.time[i] -= 2
+            
+        if self.check[0]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (250, int(self.y) + 10))
+        if self.check[1]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (550, int(self.y) + 10))
+        if self.check[2]:
+            DISPLAYSURF.blit(pygame.image.load("img/Buff/hop qua bi an.png"), (850, int(self.y) + 10))
         global pos_now5
-        pos_now5=self.x
-        if (pos_now5>1151):
+        pos_now5 = self.x
+        if (pos_now5 > 1151):
             a.append(5)
-        if self.x == 1151:
+        if self.x == 1151 and a[0] == 5:
             self.make = (self.make + 1) % 100
             if self.make % 4 == 0:
                 self.image_index = (self.image_index + 1) % 2
                 self.buff = self.image_index + 1
+    
+    def apply_buff(self, buff_type):
+        self.ngau_nhien = [random.randint(1, 100), random.randint(1, 100), random.randint(1, 100)]
+        for i in range(3):
+            if buff_type == i:
+                if self.ngau_nhien[i] >= 1 and self.ngau_nhien[i] <= 10:
+                    self.x = 100
+                    self.show[i] = 0
+                elif self.ngau_nhien[i] >= 60 and self.ngau_nhien[i] <= 51:
+                    self.x = 1100
+                    self.show[i] = 1
+                elif self.ngau_nhien[i] >= 11 and self.ngau_nhien[i] <= 50:
+                    self.x += 100
+                    self.speed *= 1.3
+                    self.show[i] = 2
+                else:
+                    self.x -= 100
+                    self.speed *= 0.8
+                    self.show[i] = 3
     def update(self):
         global pos_now5
         pos_now5 = self.x
         if self.x <= 1150:
-            self.move *= -1
-            self.buff = 1
             if self.x +5 > 1150:
                 self.x += 8
             global vt_5
             vt_5 = 0
-            change = random.randint(1, 5)
-            if ((self.x > 80 * change) and (self.x < 80 * change + 5)):
-                self.x = 250
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 2
-                self.x += random.randint(0,3)
-            elif ((self.x > 0) and (self.x < 180 * change + 100)):
-                self.buff = 0
-                self.x -= random.randint(0,3)
+            if self.x >= 150 and self.x <= 200 and self.check[0]:
+                self.apply_buff(0)
+                self.check[0] = False
+            elif self.x >= 450 and self.x <= 500 and self.check[1]:
+                self.apply_buff(1)
+                self.check[1] = False
+            elif self.x >= 750 and self.x <= 800 and self.check[2]:
+                self.apply_buff(2)
+                self.check[2] = False
             else:
                 self.x += self.speed
 
@@ -340,12 +536,14 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
     for i, car in enumerate(cars, start=1):
         if (bua_chu[0] >= 1 or bua_chu[1] >= 1 or bua_chu[2] >= 1) and chon_xe[0] == i:
             if bua_chu[0] >= 1:
-                car.speed *= ((100 + 5 * bua_chu[0]) % 100)
+                car.speed *= ((100 + 1 * bua_chu[0]) % 100)
                 bua_chu[0] -= bua_chu[0]
+                car.pay[0] = True
             
             if bua_chu[1] >= 1:
-                car.speed *= ((100 + 10 * bua_chu[1]) % 100)
+                car.speed *= ((100 + 3 * bua_chu[1]) % 100)
                 bua_chu[1] -= bua_chu[1]
+                car.pay[1] = True
             
             if bua_chu[2] >= 1:
                 car.x += 100 * bua_chu[2]
@@ -367,8 +565,6 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
         car4.update()
         car5.draw()
         car5.update()
-        # print(chon_xe)
-        # print(a)
         if (vt_1==1 and vt_2==2 and vt_3== 3 and vt_4==4 and vt_5==5):
 
             if (chon_xe[0]== a[0]):
@@ -920,6 +1116,10 @@ def delete6():
     screen7.destroy()
 
 
+def delete7():
+    screen8.destroy()
+
+
 def login_sucess():
     global screen3
     screen3 = Toplevel(screen)
@@ -962,6 +1162,14 @@ def username_or_password():
     Label(screen7, text="The length of Username or Password must be more than 6 characters !").pack()
     Button(screen7, text="OK", command=delete6).pack()
 
+
+def gmail_incorrect():
+    global screen8
+    screen8 = Toplevel(screen)
+    screen8.title("Success")
+    screen8.geometry("150x100")
+    Label(screen8, text="Gmail is not correct!").pack()
+    Button(screen8, text="OK", command=delete7).pack()
 
 
 
@@ -1066,23 +1274,31 @@ def register():
     Button(screen1, text="Register", width=10, height=1, command=register_user).pack()
 
 
+def is_valid_gmail(email):
+    gmail_pattern = re.compile(r'^[a-zA-Z0-9_.+-]+@gmail\.com$')
+    if gmail_pattern.match(email):
+        return True
+    else:
+        return False
+
 def send_otp():
 
     email1 = email_verify.get()
     # email_entry1.delete(0, END)
+    if is_valid_gmail(email1):
+        send_email(email1, ma_otp)
 
-    send_email(email1, ma_otp)
-
-    Label(screen2, text="OTP * ").pack()
-    otp_entry1 = Entry(screen2, textvariable=otp_verify)
-    otp_entry1.pack()
-    Label(screen2, text="").pack()
+        Label(screen2, text="OTP * ").pack()
+        otp_entry1 = Entry(screen2, textvariable=otp_verify)
+        otp_entry1.pack()
+        Label(screen2, text="").pack()
 
 
-    Label(screen2, text="").pack()
-    Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
-    Label(screen2, text="").pack()
-
+        Label(screen2, text="").pack()
+        Button(screen2, text="Login", width=10, height=1, command=login_verify).pack()
+        Label(screen2, text="").pack()
+    else:
+        gmail_incorrect()
 
 
 
