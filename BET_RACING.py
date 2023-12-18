@@ -6,6 +6,7 @@ from pygame.locals import *
 import time
 from log import *
 import re
+from datetime import date, datetime
 
 ##########           00012112005000      MB             ##########
 
@@ -81,7 +82,7 @@ class Car1():
         self.height = CARHEIGHT
         self.x = 0
         self.y = 250
-        self.speed = CARSPEED
+        self.speed = CARSPEED * random.choice([1.1, 0.5, 1.0, 1.2, 0.7]) * random.choice([1.1, 0.5, 1.0, 1.2, 0.7])
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
@@ -171,7 +172,7 @@ class Car2():
         self.height = CARHEIGHT
         self.x = 0
         self.y = 326
-        self.speed = CARSPEED
+        self.speed = CARSPEED * random.choice([1.1, 0.5, 1.0, 1.2, 0.7])
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
@@ -260,7 +261,7 @@ class Car3():
         self.height = CARHEIGHT
         self.x = 0
         self.y = 417
-        self.speed = CARSPEED
+        self.speed = CARSPEED * random.choice([1.1, 0.5, 1.0, 1.2, 0.7])
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
@@ -350,7 +351,7 @@ class Car4():
         self.height = CARHEIGHT
         self.x = 0
         self.y = 502
-        self.speed = CARSPEED
+        self.speed = CARSPEED * random.choice([1.1, 0.5, 1.0, 1.2, 0.7])
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
@@ -438,7 +439,7 @@ class Car5():
         self.height = CARHEIGHT
         self.x = 0
         self.y = 584
-        self.speed = CARSPEED
+        self.speed = CARSPEED * random.choice([1.1, 0.5, 1.0, 1.2, 0.7])
         self.surface = pygame.Surface((self.width, self.height))
         self.surface.fill((255, 255, 255))
         self.buff = 1
@@ -521,6 +522,14 @@ class Car5():
             vt_5 = 5
             self.x = 1151
 
+def scrshoot():
+        current_datetime = datetime.now()
+        date_time_str = current_datetime.strftime("%H-%M_%d-%m-%Y")
+        scrshoot_file_path = f"screenshot_folder/img-{date_time_str}.jpg"
+        capture_region = (0, 0, 1280, 720)
+        captured_surface = DISPLAYSURF.subsurface(pygame.Rect(capture_region))
+        pygame.image.save(captured_surface, scrshoot_file_path)
+
 def gamePlay(bg, car1, car2, car3, car4, car5):
     tmp = 10
     global  coin, tienCuoc
@@ -571,14 +580,16 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
             if (chon_xe[0]== a[0]):
                 over_bg = pygame.image.load("img\giaodienWWin.png")
                 DISPLAYSURF.blit(over_bg, (0, 0))
-                draw_text("PRESS 'ESC' TO RETURN MAINMENU", "font/FZ-SG ZT Voltra.ttf", 38, (255, 255, 255), 1120, 640, "topright")
+                draw_text("PRESS 'ESC' TO RETURN MAINMENU", "font/FZ-SG ZT Voltra.ttf", 30, (255, 255, 255), 1050, 640, "topright")
+                draw_text("PRESS 'T' TO SCREENSHOT THE RANKING", "font/FZ-SG ZT Voltra.ttf", 30, (255, 255, 255), 1120, 670, "topright")
                 if ( tmp == 10):
                     coin[0] += int(tienCuoc[0]) * 10
                     tmp += 10
             else:
                 over_bg = pygame.image.load("img\giaodienOver.png")
                 DISPLAYSURF.blit(over_bg, (0, 0))
-                draw_text("PRESS 'ESC' TO RETURN MAINMENU", "font/FZ-SG ZT Voltra.ttf", 38, (255, 255, 255), 1120, 640, "topright")
+                draw_text("PRESS 'ESC' TO RETURN MAINMENU", "font/FZ-SG ZT Voltra.ttf", 30, (255, 255, 255), 1050, 640, "topright")
+                draw_text("PRESS 'T' TO SCREENSHOT THE RANKING", "font/FZ-SG ZT Voltra.ttf", 30, (255, 255, 255), 1120, 670, "topright")
                 if (tmp == 10 ):
                     coin[0] -= int(tienCuoc[0])
                     tmp += 10
@@ -603,6 +614,9 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
                     b.clear()
                     menu_sound.stop()
                     MeNu()
+                elif event.key == K_t:
+                    # Gọi hàm scrshoot khi phím 'T' được nhấn
+                    scrshoot()
         pygame.display.update()
         fpsClock.tick(FPS)
 
