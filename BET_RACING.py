@@ -599,13 +599,13 @@ def gamePlay(bg, car1, car2, car3, car4, car5):
             for i in range(5):
                 if i == 0:
                     DISPLAYSURF.blit(b[a[i] - 1][1], (504, 239))
-                if i == 1:
+                elif i == 1:
                     DISPLAYSURF.blit(b[a[i] - 1][1], (373, 291))
-                if i == 2:
+                elif i == 2:
                     DISPLAYSURF.blit(b[a[i] - 1][1], (650, 335))
-                if i == 3:
+                elif i == 3:
                     DISPLAYSURF.blit(b[a[i] - 1][1], (231, 379))
-                if i == 4:
+                elif i == 4:
                     DISPLAYSURF.blit(b[a[i] - 1][1], (787, 417))
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
