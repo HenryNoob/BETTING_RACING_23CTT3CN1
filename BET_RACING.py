@@ -5,6 +5,7 @@ from DinoRun import *
 from pygame.locals import *
 import time
 from log import *
+import re
 
 ##########           00012112005000      MB             ##########
 
